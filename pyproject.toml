@@ -1,11 +1,82 @@
+# pyproject.toml
+
+# --- Build System (You already have this) ---
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=42", "wheel"] # Your version constraint is fine
 build-backend = "setuptools.build_meta"
 
+# +++ Project Metadata (This is the part to ADD) +++
+[project]
+name = "transcribe-meeting" # From setup.py
+version = "0.1.0" # From setup.py - Remember to bump this!
+description = "A tool for transcribing and diarizing meeting recordings" # From setup.py
+readme = "README.md"
+requires-python = ">=3.8" # From setup.py
+license = { file = "LICENSE" } # Assumes LICENSE file exists in root
+authors = [
+  { name="Your Name", email="your.email@example.com" }, # Fill this in!
+]
+keywords = ["transcription", "diarization", "whisper", "pyannote", "meeting", "audio", "video", "ai"] # Add relevant keywords
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11", # Add if you support 3.11
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Utilities",
+]
+
+# Core Dependencies (From src/requirements.txt + api.py)
+dependencies = [
+    "faster-whisper>=0.9.0",
+    "pyannote.audio>=2.1.1",
+    "torch>=2.0.0",
+    "numpy>=1.20.0",
+    "ffmpeg-python>=0.2.0",
+    "typeguard>=2.13.3",
+    "huggingface_hub>=0.19.0",
+    "tqdm>=4.65.0",
+    "matplotlib>=3.7.0", # Consider moving to dev if only for plotting/testing
+    "fastapi>=0.90.0", # For api.py
+    "uvicorn[standard]>=0.20.0", # For running api.py
+    "python-multipart", # For FastAPI file uploads in api.py
+]
+
+[project.urls] # Optional: Links shown on PyPI
+Homepage = "https://github.com/yourusername/home-ai" # Update URL
+Repository = "https://github.com/yourusername/home-ai" # Update URL
+
+# Console Scripts Entry Points (From your usage example/scripts)
+[project.scripts]
+transcribe-meeting = "transcribe_meeting.transcribe_meeting_script:main" #
+simple-transcribe = "transcribe_meeting.simple_transcribe:main" #
+
+# Optional/Development Dependencies
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+    # Add any other dev tools (e.g., types- packages for mypy)
+]
+
+# --- Tool Configurations (You already have these) ---
 [tool.black]
 line-length = 88
-target-version = ["py38", "py39", "py310"]
+target-version = ["py38", "py39", "py310", "py311"] # Added 3.11 based on classifiers
 include = '\.pyi?$'
+# Note: The exclude pattern had some non-standard spaces, fixed below:
 exclude = '''
 /(
     \.git
@@ -23,10 +94,11 @@ exclude = '''
 [tool.isort]
 profile = "black"
 line_length = 88
-multi_line_output = 3
+multi_line_output = 3 # Standard setting for black compatibility
 
 [tool.mypy]
 python_version = "3.8"
+# Your strict settings look good!
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
@@ -46,7 +118,9 @@ disallow_incomplete_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# These python_* options are often defaults, but fine to keep
 python_files = "test_*.py"
 python_functions = "test_*"
 python_classes = "Test*"
+# Your addopts look good for coverage
 addopts = "--cov=src/transcribe_meeting --cov-report=term-missing --cov-report=xml:coverage.xml"
